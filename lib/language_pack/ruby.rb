@@ -103,6 +103,7 @@ WARNING
         create_database_yml
         install_binaries
         run_assets_precompile_rake_task
+        generate_jekyll_site
       end
       best_practice_warnings
       super
@@ -810,6 +811,14 @@ params = CGI.parse(uri.query || "")
       msg << "https://devcenter.heroku.com/articles/pre-provision-database\n"
     end
     error msg
+  end
+
+  def generate_jekyll_site
+    puts "Building jekyll site"
+    pipe("env PATH=$PATH bundle exec jekyll build --trace 2>&1")
+    unless $? == 0
+      error "Failed to generate site with jekyll."
+    end
   end
 
   def bundler_cache
